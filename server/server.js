@@ -4,6 +4,13 @@ require('dotenv').config();
 
 const { testConnection } = require('./config/database');
 const authRoutes = require('./routes/auth');
+const clientRoutes = require('./routes/clients');
+const produitRoutes = require('./routes/produits');
+const commandeRoutes = require('./routes/commandes');
+const employeRoutes = require('./routes/employes');
+const factureRoutes = require('./routes/factures');
+const interventionRoutes = require('./routes/interventions');
+const dashboardRoutes = require('./routes/dashboard');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -19,6 +26,13 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/clients', clientRoutes);
+app.use('/api/produits', produitRoutes);
+app.use('/api/commandes', commandeRoutes);
+app.use('/api/employes', employeRoutes);
+app.use('/api/factures', factureRoutes);
+app.use('/api/interventions', interventionRoutes);
+app.use('/api/dashboard', dashboardRoutes);
 
 
 // Route de test
