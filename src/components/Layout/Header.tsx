@@ -6,8 +6,8 @@ const Header: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <header className="z-20 bg-white border-gray-200 shadow-sm border-bottom fixed-top ms-64" 
-            style={{ left: '256px', right: '0' }}>
+    <header className="top-0 bg-white shadow-sm position-fixed border-bottom w-100" 
+            style={{ left: '256px', right: '0', zIndex: 1020, height: '70px' }}>
       <div className="px-4 py-3 container-fluid">
         <div className="d-flex align-items-center justify-content-between">
           {/* Barre de recherche */}

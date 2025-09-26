@@ -1,14 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { 
-  Home, 
-  ShoppingCart, 
-  Users, 
-  CreditCard, 
-  Settings, 
-  LogOut,
-  User
-} from 'lucide-react';
+import { Hop as Home, ShoppingCart, Users, CreditCard, Settings, LogOut, User } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Sidebar: React.FC = () => {
@@ -24,7 +16,7 @@ const Sidebar: React.FC = () => {
   ];
 
   return (
-    <div className="top-0 z-30 bg-white shadow-lg vh-100 position-fixed start-0" style={{ width: '256px' }}>
+    <div className="top-0 bg-white shadow-lg position-fixed start-0 vh-100" style={{ width: '256px', zIndex: 1030 }}>
       <div className="p-4 h-100 d-flex flex-column">
         {/* En-tête */}
         <div className="mb-4 text-center">
