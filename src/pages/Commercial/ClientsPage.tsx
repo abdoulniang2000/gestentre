@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, Mail, Phone } from 'lucide-react';
+import { Plus, Edit, Trash2, Mail, Phone, Download, Upload } from 'lucide-react';
 import type { Client } from '../../types';
 import { clientService } from '../../services/api';
 import Table from '../../components/UI/Table';
@@ -104,8 +104,8 @@ const ClientsPage: React.FC = () => {
       label: 'Nom',
       render: (_value: string, row: Client) => (
         <div>
-          <div className="font-medium">{row.nom} {row.prenom}</div>
-          <div className="text-sm text-gray-500 capitalize">{row.type_client}</div>
+          <div className="fw-semibold">{row.nom} {row.prenom}</div>
+          <div className="text-muted small text-capitalize">{row.type_client}</div>
         </div>
       ),
     },
@@ -114,13 +114,13 @@ const ClientsPage: React.FC = () => {
       label: 'Contact',
       render: (_value: string, row: Client) => (
         <div>
-          <div className="flex items-center space-x-1">
-            <Mail className="w-4 h-4 text-gray-400" />
-            <span className="text-sm">{row.email}</span>
+          <div className="mb-1 d-flex align-items-center">
+            <Mail className="text-muted me-2" size={16} />
+            <span className="small">{row.email}</span>
           </div>
-          <div className="flex items-center space-x-1 mt-1">
-            <Phone className="w-4 h-4 text-gray-400" />
-            <span className="text-sm">{row.telephone}</span>
+          <div className="d-flex align-items-center">
+            <Phone className="text-muted me-2" size={16} />
+            <span className="small">{row.telephone}</span>
           </div>
         </div>
       ),
@@ -129,9 +129,9 @@ const ClientsPage: React.FC = () => {
       key: 'adresse',
       label: 'Adresse',
       render: (_value: string, row: Client) => (
-        <div className="text-sm">
+        <div className="small">
           <div>{row.adresse}</div>
-          <div className="text-gray-500">{row.code_postal} {row.ville}</div>
+          <div className="text-muted">{row.code_postal} {row.ville}</div>
         </div>
       ),
     },
@@ -144,20 +144,22 @@ const ClientsPage: React.FC = () => {
       key: 'actions',
       label: 'Actions',
       render: (_value: unknown, row: Client) => (
-        <div className="flex space-x-2">
+        <div className="gap-2 d-flex">
           <Button
             size="sm"
-            variant="secondary"
+            variant="outline-primary"
             onClick={() => handleEdit(row)}
+            className="btn-sm"
           >
-            <Edit className="w-4 h-4" />
+            <Edit size={16} />
           </Button>
           <Button
             size="sm"
-            variant="danger"
+            variant="outline-danger"
             onClick={() => handleDelete(row.id)}
+            className="btn-sm"
           >
-            <Trash2 className="w-4 h-4" />
+            <Trash2 size={16} />
           </Button>
         </div>
       ),
@@ -165,147 +167,175 @@ const ClientsPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Clients</h2>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Nouveau client
-        </Button>
+    <div className="py-4 container-fluid">
+      {/* En-tête de page */}
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h2 className="mb-1 h3 fw-bold text-dark">Clients</h2>
+          <p className="mb-0 text-muted">Gestion de votre portefeuille clients</p>
+        </div>
+        <div className="gap-2 d-flex">
+          <Button variant="outline-secondary" className="d-flex align-items-center">
+            <Download className="me-2" size={16} />
+            Exporter
+          </Button>
+          <Button variant="outline-secondary" className="d-flex align-items-center">
+            <Upload className="me-2" size={16} />
+            Importer
+          </Button>
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            className="d-flex align-items-center"
+          >
+            <Plus className="me-2" size={16} />
+            Nouveau client
+          </Button>
+        </div>
       </div>
 
-      <Table columns={columns} data={clients} loading={loading} />
+      {/* Tableau */}
+      <div className="border-0 shadow-sm card">
+        <div className="p-0 card-body">
+          <Table columns={columns} data={clients} loading={loading} />
+        </div>
+      </div>
 
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={editingClient ? 'Modifier le client' : 'Nouveau client'}
         size="lg"
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+        <form onSubmit={handleSubmit}>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <label htmlFor="nom" className="form-label fw-semibold">
                 Nom *
               </label>
               <input
+                id="nom"
                 type="text"
                 required
                 value={formData.nom}
                 onChange={(e) => setFormData({ ...formData, nom: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-6">
+              <label htmlFor="prenom" className="form-label fw-semibold">
                 Prénom *
               </label>
               <input
+                id="prenom"
                 type="text"
                 required
                 value={formData.prenom}
                 onChange={(e) => setFormData({ ...formData, prenom: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-6">
+              <label htmlFor="email" className="form-label fw-semibold">
                 Email *
               </label>
               <input
+                id="email"
                 type="email"
                 required
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-6">
+              <label htmlFor="telephone" className="form-label fw-semibold">
                 Téléphone *
               </label>
               <input
+                id="telephone"
                 type="tel"
                 required
                 value={formData.telephone}
                 onChange={(e) => setFormData({ ...formData, telephone: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Adresse *
-            </label>
-            <input
-              type="text"
-              required
-              value={formData.adresse}
-              onChange={(e) => setFormData({ ...formData, adresse: e.target.value })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+            <div className="col-12">
+              <label htmlFor="adresse" className="form-label fw-semibold">
+                Adresse *
+              </label>
+              <input
+                id="adresse"
+                type="text"
+                required
+                value={formData.adresse}
+                onChange={(e) => setFormData({ ...formData, adresse: e.target.value })}
+                className="form-control"
+              />
+            </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-4">
+              <label htmlFor="code_postal" className="form-label fw-semibold">
                 Code postal *
               </label>
               <input
+                id="code_postal"
                 type="text"
                 required
                 value={formData.code_postal}
                 onChange={(e) => setFormData({ ...formData, code_postal: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-4">
+              <label htmlFor="ville" className="form-label fw-semibold">
                 Ville *
               </label>
               <input
+                id="ville"
                 type="text"
                 required
                 value={formData.ville}
                 onChange={(e) => setFormData({ ...formData, ville: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-4">
+              <label htmlFor="pays" className="form-label fw-semibold">
                 Pays *
               </label>
               <input
+                id="pays"
                 type="text"
                 required
                 value={formData.pays}
                 onChange={(e) => setFormData({ ...formData, pays: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
+            </div>
+
+            <div className="col-12">
+              <label htmlFor="type_client" className="form-label fw-semibold">
+                Type de client *
+              </label>
+              <select
+                id="type_client"
+                required
+                value={formData.type_client}
+                onChange={(e) => setFormData({ ...formData, type_client: e.target.value as 'particulier' | 'entreprise' })}
+                className="form-select"
+              >
+                <option value="particulier">Particulier</option>
+                <option value="entreprise">Entreprise</option>
+              </select>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Type de client *
-            </label>
-            <select
-              required
-              value={formData.type_client}
-              onChange={(e) => setFormData({ ...formData, type_client: e.target.value as 'particulier' | 'entreprise' })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="particulier">Particulier</option>
-              <option value="entreprise">Entreprise</option>
-            </select>
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-4">
-            <Button type="button" variant="secondary" onClick={handleCloseModal}>
+          <div className="gap-2 pt-3 mt-4 d-flex justify-content-end border-top">
+            <Button type="button" variant="outline-secondary" onClick={handleCloseModal}>
               Annuler
             </Button>
             <Button type="submit">

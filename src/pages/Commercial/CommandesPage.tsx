@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Plus, Edit, Trash2, FileText, User } from 'lucide-react';
+import { Plus, Edit, Trash2, FileText, User, Download, Upload, Eye } from 'lucide-react';
 import type { Commande, Client } from '../../types';
 import { commandeService, clientService } from '../../services/api';
 import Table from '../../components/UI/Table';
@@ -98,6 +98,11 @@ const CommandesPage: React.FC = () => {
     }
   };
 
+  const handleView = (commande: Commande) => {
+    // Implémentez la visualisation détaillée
+    console.log('Voir commande:', commande);
+  };
+
   const handleCloseModal = () => {
     setIsModalOpen(false);
     setEditingCommande(null);
@@ -111,26 +116,22 @@ const CommandesPage: React.FC = () => {
     });
   };
 
-  const getStatutColor = (statut: string) => {
-    switch (statut) {
-      case 'en_attente': return 'bg-yellow-100 text-yellow-800';
-      case 'confirmee': return 'bg-blue-100 text-blue-800';
-      case 'en_cours': return 'bg-orange-100 text-orange-800';
-      case 'livree': return 'bg-green-100 text-green-800';
-      case 'annulee': return 'bg-red-100 text-red-800';
-      default: return 'bg-gray-100 text-gray-800';
-    }
-  };
+  const getStatutBadge = (statut: string) => {
+    const statutConfig = {
+      'en_attente': { class: 'bg-warning text-dark', label: 'En attente' },
+      'confirmee': { class: 'bg-info text-white', label: 'Confirmée' },
+      'en_cours': { class: 'bg-primary text-white', label: 'En cours' },
+      'livree': { class: 'bg-success text-white', label: 'Livrée' },
+      'annulee': { class: 'bg-danger text-white', label: 'Annulée' },
+    };
 
-  const getStatutLabel = (statut: string) => {
-    switch (statut) {
-      case 'en_attente': return 'En attente';
-      case 'confirmee': return 'Confirmée';
-      case 'en_cours': return 'En cours';
-      case 'livree': return 'Livrée';
-      case 'annulee': return 'Annulée';
-      default: return statut;
-    }
+    const config = statutConfig[statut as keyof typeof statutConfig] || { class: 'bg-secondary', label: statut };
+    
+    return (
+      <span className={`badge ${config.class} animate__animated animate__pulse`}>
+        {config.label}
+      </span>
+    );
   };
 
   const columns = [
@@ -139,11 +140,11 @@ const CommandesPage: React.FC = () => {
       label: 'N° Commande',
       render: (value: string, row: Commande) => (
         <div>
-          <div className="font-medium flex items-center">
-            <FileText className="w-4 h-4 mr-2 text-gray-400" />
+          <div className="fw-semibold d-flex align-items-center">
+            <FileText className="text-muted me-2" size={16} />
             {value}
           </div>
-          <div className="text-sm text-gray-500">
+          <div className="text-muted small">
             {new Date(row.date_commande).toLocaleDateString('fr-FR')}
           </div>
         </div>
@@ -155,32 +156,28 @@ const CommandesPage: React.FC = () => {
       render: (_value: unknown, row: Commande) => {
         const client = clients.find(c => c.id === row.client_id);
         return client ? (
-          <div className="flex items-center">
-            <User className="w-4 h-4 mr-2 text-gray-400" />
+          <div className="d-flex align-items-center">
+            <User className="text-muted me-2" size={16} />
             <div>
-              <div className="font-medium">{client.nom} {client.prenom}</div>
-              <div className="text-sm text-gray-500">{client.email}</div>
+              <div className="fw-semibold">{client.nom} {client.prenom}</div>
+              <div className="text-muted small">{client.email}</div>
             </div>
           </div>
         ) : (
-          <span className="text-gray-500">Client introuvable</span>
+          <span className="text-muted small">Client introuvable</span>
         );
       },
     },
     {
       key: 'statut',
       label: 'Statut',
-      render: (value: string) => (
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatutColor(value)}`}>
-          {getStatutLabel(value)}
-        </span>
-      ),
+      render: (value: string) => getStatutBadge(value),
     },
     {
       key: 'montant_total',
       label: 'Montant',
       render: (value: number) => (
-        <div className="font-medium text-green-600">
+        <div className="fw-bold text-success">
           {value.toFixed(2)} €
         </div>
       ),
@@ -189,20 +186,30 @@ const CommandesPage: React.FC = () => {
       key: 'actions',
       label: 'Actions',
       render: (_value: unknown, row: Commande) => (
-        <div className="flex space-x-2">
+        <div className="gap-1 d-flex">
           <Button
             size="sm"
-            variant="secondary"
-            onClick={() => handleEdit(row)}
+            variant="outline-primary"
+            onClick={() => handleView(row)}
+            className="btn-sm"
           >
-            <Edit className="w-4 h-4" />
+            <Eye size={14} />
           </Button>
           <Button
             size="sm"
-            variant="danger"
-            onClick={() => handleDelete(row.id)}
+            variant="outline-warning"
+            onClick={() => handleEdit(row)}
+            className="btn-sm"
           >
-            <Trash2 className="w-4 h-4" />
+            <Edit size={14} />
+          </Button>
+          <Button
+            size="sm"
+            variant="outline-danger"
+            onClick={() => handleDelete(row.id)}
+            className="btn-sm"
+          >
+            <Trash2 size={14} />
           </Button>
         </div>
       ),
@@ -210,79 +217,104 @@ const CommandesPage: React.FC = () => {
   ];
 
   return (
-    <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold text-gray-900">Commandes</h2>
-        <Button onClick={() => setIsModalOpen(true)}>
-          <Plus className="w-4 h-4 mr-2" />
-          Nouvelle commande
-        </Button>
+    <div className="py-4 container-fluid">
+      {/* En-tête de page */}
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <div>
+          <h2 className="mb-1 h3 fw-bold text-dark">Commandes</h2>
+          <p className="mb-0 text-muted">Gestion des commandes clients</p>
+        </div>
+        <div className="gap-2 d-flex">
+          <Button variant="outline-secondary" className="d-flex align-items-center">
+            <Download className="me-2" size={16} />
+            Exporter
+          </Button>
+          <Button variant="outline-secondary" className="d-flex align-items-center">
+            <Upload className="me-2" size={16} />
+            Importer
+          </Button>
+          <Button 
+            onClick={() => setIsModalOpen(true)}
+            className="d-flex align-items-center"
+          >
+            <Plus className="me-2" size={16} />
+            Nouvelle commande
+          </Button>
+        </div>
       </div>
 
-      <Table columns={columns} data={commandes} loading={loading} />
+      {/* Tableau */}
+      <div className="border-0 shadow-sm card">
+        <div className="p-0 card-body">
+          <Table columns={columns} data={commandes} loading={loading} />
+        </div>
+      </div>
 
+      {/* Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={handleCloseModal}
         title={editingCommande ? 'Modifier la commande' : 'Nouvelle commande'}
         size="lg"
       >
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+        <form onSubmit={handleSubmit}>
+          <div className="row g-3">
+            <div className="col-md-6">
+              <label htmlFor="client_id" className="form-label fw-semibold">
                 Client *
               </label>
               <select
+                id="client_id"
                 required
                 value={formData.client_id}
                 onChange={(e) => setFormData({ ...formData, client_id: parseInt(e.target.value) })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-select"
               >
                 <option value={0}>Sélectionner un client</option>
                 {clients.map((client) => (
                   <option key={client.id} value={client.id}>
-                    {client.nom} {client.prenom}
+                    {client.nom} {client.prenom} - {client.email}
                   </option>
                 ))}
               </select>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-6">
+              <label htmlFor="numero_commande" className="form-label fw-semibold">
                 N° Commande
               </label>
               <input
+                id="numero_commande"
                 type="text"
                 value={formData.numero_commande}
                 onChange={(e) => setFormData({ ...formData, numero_commande: e.target.value })}
                 placeholder="Généré automatiquement"
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-          </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-6">
+              <label htmlFor="date_commande" className="form-label fw-semibold">
                 Date de commande *
               </label>
               <input
+                id="date_commande"
                 type="date"
                 required
                 value={formData.date_commande}
                 onChange={(e) => setFormData({ ...formData, date_commande: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="form-control"
               />
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+            <div className="col-md-6">
+              <label htmlFor="statut" className="form-label fw-semibold">
                 Statut *
               </label>
               <select
+                id="statut"
                 required
                 value={formData.statut}
-                onChange={(e) => setFormData({ ...formData, statut: e.target.value as 'en_attente' | 'confirmee' | 'en_cours' | 'livree' | 'annulee' })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                onChange={(e) => setFormData({ ...formData, statut: e.target.value as any })}
+                className="form-select"
               >
                 <option value="en_attente">En attente</option>
                 <option value="confirmee">Confirmée</option>
@@ -291,37 +323,39 @@ const CommandesPage: React.FC = () => {
                 <option value="annulee">Annulée</option>
               </select>
             </div>
+
+            <div className="col-12">
+              <label htmlFor="montant_total" className="form-label fw-semibold">
+                Montant total (€) *
+              </label>
+              <input
+                id="montant_total"
+                type="number"
+                step="0.01"
+                min="0"
+                required
+                value={formData.montant_total}
+                onChange={(e) => setFormData({ ...formData, montant_total: parseFloat(e.target.value) || 0 })}
+                className="form-control"
+              />
+            </div>
+
+            <div className="col-12">
+              <label htmlFor="notes" className="form-label fw-semibold">
+                Notes
+              </label>
+              <textarea
+                id="notes"
+                value={formData.notes}
+                onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+                rows={3}
+                className="form-control"
+              />
+            </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Montant total (€) *
-            </label>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              required
-              value={formData.montant_total}
-              onChange={(e) => setFormData({ ...formData, montant_total: parseFloat(e.target.value) || 0 })}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Notes
-            </label>
-            <textarea
-              value={formData.notes}
-              onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-              rows={3}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
-
-          <div className="flex justify-end space-x-3 pt-4">
-            <Button type="button" variant="secondary" onClick={handleCloseModal}>
+          <div className="gap-2 pt-3 mt-4 d-flex justify-content-end border-top">
+            <Button type="button" variant="outline-secondary" onClick={handleCloseModal}>
               Annuler
             </Button>
             <Button type="submit">

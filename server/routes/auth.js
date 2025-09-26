@@ -1,7 +1,7 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { executeQuery } = require('../config/database'); // Modifier cette ligne
+const { executeQuery } = require('../config/database');
 const { authenticateToken } = require('../middleware/auth');
 
 const router = express.Router();
@@ -39,7 +39,7 @@ router.post('/login', async (req, res) => {
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
-        message: 'Email ou mot de passe incorrect'
+        message: 'Mot de passe incorrect'
       });
     }
 
@@ -51,7 +51,7 @@ router.post('/login', async (req, res) => {
     );
 
     // Mettre à jour la dernière connexion
-    await executeQuery( // Modifier cette ligne
+    await executeQuery(
       'UPDATE users SET last_login = NOW() WHERE id = ?',
       [user.id]
     );
@@ -101,9 +101,6 @@ router.get('/me', authenticateToken, async (req, res) => {
 // Route de déconnexion (optionnelle - côté client principalement)
 router.post('/logout', authenticateToken, async (req, res) => {
   try {
-    // Ici vous pourriez ajouter une logique pour invalider le token
-    // Par exemple, l'ajouter à une blacklist en base de données
-    
     res.json({
       success: true,
       message: 'Déconnexion réussie'

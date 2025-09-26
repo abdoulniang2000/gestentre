@@ -15,54 +15,61 @@ const Sidebar: React.FC = () => {
   const { logout } = useAuth();
 
   const menuItems = [
-    { path: '/dashboard', icon: Home, label: 'Dashboard', color: 'text-gray-600' },
-    { path: '/commercial', icon: ShoppingCart, label: 'Gestion commerciale', color: 'text-red-500' },
-    { path: '/rh', icon: Users, label: 'Gestion RH', color: 'text-orange-500' },
-    { path: '/comptable', icon: CreditCard, label: 'Gestion Comptable', color: 'text-green-500' },
-    { path: '/intervention', icon: Settings, label: 'Gestion intervention', color: 'text-blue-500' },
-    { path: '/utilisateur', icon: User, label: 'Gestion utilisateur', color: 'text-purple-500' },
+    { path: '/dashboard', icon: Home, label: 'Dashboard', color: 'text-muted' },
+    { path: '/commercial', icon: ShoppingCart, label: 'Gestion commerciale', color: 'text-danger' },
+    { path: '/rh', icon: Users, label: 'Gestion RH', color: 'text-warning' },
+    { path: '/comptable', icon: CreditCard, label: 'Gestion Comptable', color: 'text-success' },
+    { path: '/intervention', icon: Settings, label: 'Gestion intervention', color: 'text-primary' },
+    { path: '/utilisateur', icon: User, label: 'Gestion utilisateur', color: 'text-info' },
   ];
 
   return (
-    <div className="bg-white shadow-lg h-screen w-64 fixed left-0 top-0 z-30">
-      <div className="p-6">
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold">
-            NET<span className="text-red-500">SYSTEME</span>
+    <div className="top-0 z-30 bg-white shadow-lg vh-100 position-fixed start-0" style={{ width: '256px' }}>
+      <div className="p-4 h-100 d-flex flex-column">
+        {/* En-tête */}
+        <div className="mb-4 text-center">
+          <h1 className="mb-1 h3 fw-bold text-dark">
+            NET<span className="text-danger">SYSTEME</span>
           </h1>
-          <p className="text-sm text-gray-500 mt-1">SIMPLIFIEZ VOTRE VIE</p>
-          <div className="bg-gray-800 text-white px-4 py-2 rounded-lg mt-4">
-            <div className="text-sm font-medium">NET PRO®</div>
-            <div className="text-xs">Version 2025</div>
+          <p className="mb-3 text-muted small">SIMPLIFIEZ VOTRE VIE</p>
+          <div className="px-3 py-2 text-white rounded bg-dark">
+            <div className="fw-medium small">NET PRO®</div>
+            <div className="opacity-75 small">Version 2025</div>
           </div>
         </div>
 
-        <nav className="space-y-2">
-          {menuItems.map((item) => (
-            <NavLink
-              key={item.path}
-              to={item.path}
-              className={({ isActive }) =>
-                `flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
-                  isActive
-                    ? 'bg-blue-50 text-blue-600 border-r-4 border-blue-600'
-                    : 'text-gray-600 hover:bg-gray-50'
-                }`
-              }
-            >
-              <item.icon className={`w-5 h-5 ${item.color}`} />
-              <span className="font-medium">{item.label}</span>
-            </NavLink>
-          ))}
+        {/* Navigation */}
+        <nav className="flex-grow-1">
+          <ul className="nav nav-pills flex-column">
+            {menuItems.map((item, index) => (
+              <li key={item.path} className="mb-2 nav-item">
+                <NavLink
+                  to={item.path}
+                  className={({ isActive }) =>
+                    `nav-link d-flex align-items-center animate__animated animate__fadeInLeft ${
+                      isActive
+                        ? 'active bg-primary text-white shadow-sm'
+                        : 'text-muted hover-bg-light'
+                    }`
+                  }
+                  style={{ animationDelay: `${index * 100}ms` }}
+                >
+                  <item.icon className={`me-3 ${menuItems.find(m => m.path === item.path)?.color}`} size={20} />
+                  <span className="fw-medium">{item.label}</span>
+                </NavLink>
+              </li>
+            ))}
+          </ul>
         </nav>
 
-        <div className="absolute bottom-6 left-6 right-6">
+        {/* Bouton de déconnexion */}
+        <div className="pt-3 mt-auto border-top">
           <button
             onClick={logout}
-            className="flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-600 hover:bg-red-50 hover:text-red-600 transition-colors duration-200 w-full"
+            className="btn btn-outline-danger d-flex align-items-center w-100 animate__animated animate__fadeInUp"
           >
-            <LogOut className="w-5 h-5" />
-            <span className="font-medium">Déconnexion</span>
+            <LogOut className="me-2" size={18} />
+            <span className="fw-medium">Déconnexion</span>
           </button>
         </div>
       </div>

@@ -60,6 +60,10 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         setUser(user);
         return true;
       }
+      // Gérer les erreurs de réponse non-HTTP (comme un 401)
+      if (response.message) {
+        throw new Error(response.message);
+      }
       return false;
     } catch (error) {
       console.error('Erreur de connexion:', error);

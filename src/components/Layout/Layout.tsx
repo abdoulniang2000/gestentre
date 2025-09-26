@@ -8,7 +8,7 @@ const Layout: React.FC = () => {
     <div className="min-h-screen bg-gray-50">
       <Sidebar />
       <Header />
-      <main className="ml-64 pt-20 p-6">
+      <main className="p-6 pt-20 ml-64">
         <Outlet />
       </main>
     </div>

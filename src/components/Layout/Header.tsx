@@ -6,34 +6,76 @@ const Header: React.FC = () => {
   const { user } = useAuth();
 
   return (
-    <header className="bg-white shadow-sm border-b border-gray-200 fixed top-0 right-0 left-64 z-20">
-      <div className="px-6 py-4">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center space-x-4">
-            <div className="relative">
-              <Search className="w-5 h-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-              <input
-                type="text"
-                placeholder="Rechercher..."
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              />
+    <header className="z-20 bg-white border-gray-200 shadow-sm border-bottom fixed-top ms-64" 
+            style={{ left: '256px', right: '0' }}>
+      <div className="px-4 py-3 container-fluid">
+        <div className="d-flex align-items-center justify-content-between">
+          {/* Barre de recherche */}
+          <div className="d-flex align-items-center">
+            <div className="position-relative me-4">
+              <div className="input-group">
+                <span className="bg-transparent input-group-text border-end-0">
+                  <Search className="text-muted" size={18} />
+                </span>
+                <input
+                  type="text"
+                  placeholder="Rechercher..."
+                  className="form-control border-start-0 ps-2"
+                  style={{ borderLeft: 'none' }}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-4">
-            <button className="relative p-2 text-gray-400 hover:text-gray-600 transition-colors">
-              <Bell className="w-6 h-6" />
-              <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+          {/* Notifications et profil utilisateur */}
+          <div className="d-flex align-items-center">
+            {/* Bouton notifications avec badge */}
+            <button className="p-2 btn btn-light position-relative me-3 animate__animated animate__pulse animate__infinite" 
+                    style={{ animationDuration: '3s' }}>
+              <Bell size={20} className="text-muted" />
+              <span className="top-0 p-1 border position-absolute start-100 translate-middle bg-danger border-light rounded-circle">
+                <span className="visually-hidden">Nouvelles notifications</span>
+              </span>
             </button>
 
-            <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
-                <User className="w-5 h-5 text-white" />
-              </div>
-              <div className="text-sm">
-                <div className="font-medium text-gray-900">{user?.nom}</div>
-                <div className="text-gray-500 capitalize">{user?.role}</div>
-              </div>
+            {/* Profil utilisateur */}
+            <div className="dropdown">
+              <button 
+                className="p-0 btn btn-link text-decoration-none dropdown-toggle d-flex align-items-center" 
+                type="button" 
+                data-bs-toggle="dropdown" 
+                aria-expanded="false"
+              >
+                <div className="bg-primary rounded-circle d-flex align-items-center justify-content-center me-2" 
+                     style={{ width: '36px', height: '36px' }}>
+                  <User className="text-white" size={18} />
+                </div>
+                <div className="text-start d-none d-md-block">
+                  <div className="fw-medium text-dark small">{user?.nom}</div>
+                  <div className="text-muted text-capitalize small">{user?.role}</div>
+                </div>
+              </button>
+              <ul className="border-0 shadow dropdown-menu dropdown-menu-end animate__animated animate__fadeIn">
+                <li>
+                  <a className="dropdown-item d-flex align-items-center" href="#">
+                    <User className="me-2" size={16} />
+                    Mon profil
+                  </a>
+                </li>
+                <li>
+                  <a className="dropdown-item d-flex align-items-center" href="#">
+                    <Bell className="me-2" size={16} />
+                    Notifications
+                  </a>
+                </li>
+                <li><hr className="dropdown-divider" /></li>
+                <li>
+                  <a className="dropdown-item d-flex align-items-center text-danger" href="#">
+                    <i className="bi bi-box-arrow-right me-2"></i>
+                    Déconnexion
+                  </a>
+                </li>
+              </ul>
             </div>
           </div>
         </div>

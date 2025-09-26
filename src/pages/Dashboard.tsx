@@ -9,6 +9,7 @@ import {
   DollarSign,
   Package,
   Calendar,
+  LogOut
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
@@ -27,10 +28,11 @@ const Dashboard: React.FC = () => {
     commandesRecentes: [],
     interventionsRecentes: []
   });
-  // Removed unused loading state
+  const [, setAnimate] = useState(false);
 
   useEffect(() => {
     loadDashboardStats();
+    setAnimate(true);
   }, []);
 
   const loadDashboardStats = async () => {
@@ -41,49 +43,48 @@ const Dashboard: React.FC = () => {
       }
     } catch (error) {
       console.error('Erreur lors du chargement des statistiques:', error);
-    } finally {
-      // Removed setLoading(false) since loading state is unused
     }
+  };
+
+  const handleLogout = () => {
+    // Implémentez la logique de déconnexion ici
+    console.log('Déconnexion');
+    navigate('/login');
   };
 
   const modules = [
     {
       title: 'Gestion commerciale',
       icon: ShoppingCart,
-      color: 'bg-red-500',
-      hoverColor: 'hover:bg-red-600',
+      color: 'bg-danger',
       path: '/commercial',
       description: 'Clients, produits, commandes'
     },
     {
       title: 'Gestion RH',
       icon: Users,
-      color: 'bg-orange-500',
-      hoverColor: 'hover:bg-orange-600',
+      color: 'bg-warning',
       path: '/rh',
       description: 'Employés, congés, paie'
     },
     {
       title: 'Gestion Comptable',
       icon: CreditCard,
-      color: 'bg-green-500',
-      hoverColor: 'hover:bg-green-600',
+      color: 'bg-success',
       path: '/comptable',
       description: 'Factures, paiements, comptabilité'
     },
     {
-      title: 'Gestion intervention',
+      title: 'Gestion Interversion',
       icon: Settings,
-      color: 'bg-blue-500',
-      hoverColor: 'hover:bg-blue-600',
+      color: 'bg-primary',
       path: '/intervention',
       description: 'Interventions, maintenance'
     },
     {
       title: 'Gestion utilisateur',
       icon: User,
-      color: 'bg-purple-500',
-      hoverColor: 'hover:bg-purple-600',
+      color: 'bg-info',
       path: '/utilisateur',
       description: 'Utilisateurs, permissions'
     },
@@ -94,102 +95,137 @@ const Dashboard: React.FC = () => {
       title: 'Clients',
       value: stats.totalClients,
       icon: Users,
-      color: 'text-blue-600',
-      bgColor: 'bg-blue-50',
+      color: 'text-primary',
+      bgColor: 'bg-primary bg-opacity-10',
     },
     {
       title: 'Commandes',
       value: stats.totalCommandes,
       icon: Package,
-      color: 'text-green-600',
-      bgColor: 'bg-green-50',
+      color: 'text-success',
+      bgColor: 'bg-success bg-opacity-10',
     },
     {
       title: 'Employés',
       value: stats.totalEmployes,
       icon: Users,
-      color: 'text-purple-600',
-      bgColor: 'bg-purple-50',
+      color: 'text-info',
+      bgColor: 'bg-info bg-opacity-10',
     },
     {
       title: 'Chiffre d\'affaires',
       value: `${stats.chiffreAffaires.toLocaleString()} €`,
       icon: DollarSign,
-      color: 'text-yellow-600',
-      bgColor: 'bg-yellow-50',
+      color: 'text-warning',
+      bgColor: 'bg-warning bg-opacity-10',
     },
   ];
 
   return (
-    <div className="space-y-8">
-      {/* En-tête */}
-      <div className="text-center">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">
-          NET<span className="text-red-500">SYSTEME</span>
+    <div className="py-4 container-fluid">
+      {/* En-tête avec déconnexion */}
+      <div className="mb-4 d-flex justify-content-between align-items-center">
+        <div></div> {/* Espace vide pour équilibrer la flexbox */}
+        <button 
+          onClick={handleLogout}
+          className="btn btn-outline-danger d-flex align-items-center animate__animated animate__fadeIn"
+        >
+          <LogOut className="me-2" size={18} />
+          Déconnexion
+        </button>
+      </div>
+
+      {/* En-tête principal */}
+      <div className="mb-5 text-center animate__animated animate__fadeInDown">
+        <h1 className="mb-2 display-4 fw-bold text-dark">
+          NET <span className="text-danger">SYSTEME</span>
         </h1>
-        <p className="text-gray-600 mb-4">SIMPLIFIEZ VOTRE VIE</p>
-        <div className="inline-block bg-gray-800 text-white px-6 py-3 rounded-lg">
-          <div className="text-lg font-medium">NET PRO®</div>
-          <div className="text-sm">Version 2025</div>
+        <p className="mb-3 lead text-muted">SIMPLIFIEZ VOTRE VIE</p>
+        <div className="px-4 py-2 text-white bg-dark d-inline-block rounded-3">
+          <div className="fw-bold fs-5">NET PRO®</div>
+          <div className="small">Version 2025</div>
         </div>
       </div>
 
-      {/* Statistiques */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {statsCards.map((stat, index) => (
-          <div key={index} className="bg-white rounded-lg shadow-md p-6">
-            <div className="flex items-center">
-              <div className={`p-3 rounded-full ${stat.bgColor}`}>
-                <stat.icon className={`w-6 h-6 ${stat.color}`} />
-              </div>
-              <div className="ml-4">
-                <p className="text-sm font-medium text-gray-600">{stat.title}</p>
-                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+      {/* Modules principaux - disposition comme sur la capture */}
+      <div className="mb-5 row justify-content-center">
+        {modules.map((module, index) => (
+          <div key={index} className="mb-4 col-12 col-md-6 col-lg-4">
+            <div 
+              className={`card h-100 shadow-sm border-0 animate__animated animate__fadeInUp`}
+              style={{ animationDelay: `${index * 100}ms` }}
+            >
+              <div className="p-4 text-center card-body d-flex flex-column justify-content-center">
+                <div className={`${module.color} rounded-circle d-inline-flex align-items-center justify-content-center mb-3 mx-auto`} 
+                     style={{ width: '80px', height: '80px' }}>
+                  <module.icon className="text-white" size={32} />
+                </div>
+                <h5 className="mb-2 card-title fw-bold text-dark">{module.title}</h5>
+                <p className="card-text text-muted small">{module.description}</p>
+                <button 
+                  onClick={() => navigate(module.path)}
+                  className="mt-auto btn btn-outline-dark"
+                >
+                  Accéder
+                </button>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Modules principaux */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {modules.map((module, index) => (
-          <div
-            key={index}
-            onClick={() => navigate(module.path)}
-            className="bg-white rounded-2xl shadow-lg p-8 cursor-pointer transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
-          >
-            <div className="text-center">
-              <div className={`w-20 h-20 ${module.color} ${module.hoverColor} rounded-full flex items-center justify-center mx-auto mb-4 transition-colors duration-300`}>
-                <module.icon className="w-10 h-10 text-white" />
+      {/* Statistiques en bas */}
+      <div className="mt-5 row">
+        <div className="col-12">
+          <h3 className="mb-4 text-center fw-bold">Aperçu du système</h3>
+        </div>
+        {statsCards.map((stat, index) => (
+          <div key={index} className="mb-3 col-6 col-md-3">
+            <div className="border-0 shadow-sm card h-100 animate__animated animate__fadeIn"
+                 style={{ animationDelay: `${index * 200}ms` }}>
+              <div className="text-center card-body">
+                <div className={`rounded-circle d-inline-flex align-items-center justify-content-center mb-3 ${stat.bgColor}`} 
+                     style={{ width: '60px', height: '60px' }}>
+                  <stat.icon className={stat.color} size={24} />
+                </div>
+                <h4 className="fw-bold text-dark">{stat.value}</h4>
+                <p className="mb-0 text-muted small">{stat.title}</p>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{module.title}</h3>
-              <p className="text-gray-600 text-sm">{module.description}</p>
             </div>
           </div>
         ))}
       </div>
 
       {/* Activités récentes */}
-      <div className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-xl font-bold text-gray-900 mb-4">Activités récentes</h2>
-        <div className="space-y-4">
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-              <TrendingUp className="w-5 h-5 text-blue-600" />
+      <div className="mt-4 row">
+        <div className="col-12">
+          <div className="border-0 shadow-sm card">
+            <div className="bg-transparent border-0 card-header">
+              <h5 className="mb-0 fw-bold">Activités récentes</h5>
             </div>
-            <div>
-              <p className="font-medium text-gray-900">Nouvelle commande créée</p>
-              <p className="text-sm text-gray-600">Il y a 2 heures</p>
-            </div>
-          </div>
-          <div className="flex items-center space-x-4 p-4 bg-gray-50 rounded-lg">
-            <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-              <Calendar className="w-5 h-5 text-green-600" />
-            </div>
-            <div>
-              <p className="font-medium text-gray-900">Intervention planifiée</p>
-              <p className="text-sm text-gray-600">Il y a 4 heures</p>
+            <div className="card-body">
+              <div className="list-group list-group-flush">
+                <div className="border-0 list-group-item d-flex align-items-center">
+                  <div className="bg-primary bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" 
+                       style={{ width: '40px', height: '40px' }}>
+                    <TrendingUp className="text-primary" size={18} />
+                  </div>
+                  <div>
+                    <p className="mb-1 fw-medium">Nouvelle commande créée</p>
+                    <small className="text-muted">Il y a 2 heures</small>
+                  </div>
+                </div>
+                <div className="border-0 list-group-item d-flex align-items-center">
+                  <div className="bg-success bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center me-3" 
+                       style={{ width: '40px', height: '40px' }}>
+                    <Calendar className="text-success" size={18} />
+                  </div>
+                  <div>
+                    <p className="mb-1 fw-medium">Intervention planifiée</p>
+                    <small className="text-muted">Il y a 4 heures</small>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
