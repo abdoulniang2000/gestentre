@@ -9,6 +9,9 @@ import RHPage from './pages/RH';
 import ComptablePage from './pages/Comptable';
 import InterventionPage from './pages/Intervention';
 import UtilisateurPage from './pages/Utilisateur';
+import PointagePage from './pages/Pointage';
+import DepensesPage from './pages/Depenses';
+import InventairePage from './pages/Inventaire';
 import './index.css';
 
 function App() {
@@ -32,6 +35,9 @@ function App() {
             <Route path="comptable/*" element={<ComptablePage />} />
             <Route path="intervention/*" element={<InterventionPage />} />
             <Route path="utilisateur" element={<UtilisateurPage />} />
+            <Route path="pointage" element={<PointagePage />} />
+            <Route path="depenses" element={<DepensesPage />} />
+            <Route path="inventaire" element={<InventairePage />} />
           </Route>
         </Routes>
       </Router>

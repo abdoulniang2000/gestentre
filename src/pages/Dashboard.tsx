@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingCart, Users, CreditCard, Settings, User, TrendingUp, DollarSign, Package, Calendar, TriangleAlert as AlertTriangle, Clock, CircleCheck as CheckCircle } from 'lucide-react';
+import { ShoppingCart, Users, CreditCard, Settings, User, TrendingUp, DollarSign, Package, Calendar, TriangleAlert as AlertTriangle, Clock, CircleCheck as CheckCircle, MapPin } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardService } from '../services/api';
 import type { DashboardStats } from '../types';
@@ -236,6 +236,53 @@ const Dashboard: React.FC = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Boutons d'actions rapides */}
+      <div className="mb-5 row">
+        <div className="col-12">
+          <h3 className="mb-4 text-center fw-bold">Actions rapides</h3>
+        </div>
+        <div className="col-md-3">
+          <button 
+            onClick={() => navigate('/pointage')}
+            className="p-4 w-100 btn btn-outline-info d-flex flex-column align-items-center"
+          >
+            <Clock size={32} className="mb-2" />
+            <span className="fw-bold">Pointage</span>
+            <small className="text-muted">Pointer vos heures</small>
+          </button>
+        </div>
+        <div className="col-md-3">
+          <button 
+            onClick={() => navigate('/intervention')}
+            className="p-4 w-100 btn btn-outline-primary d-flex flex-column align-items-center"
+          >
+            <Settings size={32} className="mb-2" />
+            <span className="fw-bold">Interventions</span>
+            <small className="text-muted">Gérer les interventions</small>
+          </button>
+        </div>
+        <div className="col-md-3">
+          <button 
+            onClick={() => navigate('/commercial/clients')}
+            className="p-4 w-100 btn btn-outline-danger d-flex flex-column align-items-center"
+          >
+            <Users size={32} className="mb-2" />
+            <span className="fw-bold">Clients</span>
+            <small className="text-muted">Gérer les clients</small>
+          </button>
+        </div>
+        <div className="col-md-3">
+          <button 
+            onClick={() => navigate('/depenses')}
+            className="p-4 w-100 btn btn-outline-warning d-flex flex-column align-items-center"
+          >
+            <DollarSign size={32} className="mb-2" />
+            <span className="fw-bold">Dépenses</span>
+            <small className="text-muted">Gérer les dépenses</small>
+          </button>
+        </div>
       </div>
 
       {/* Activités récentes */}

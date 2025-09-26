@@ -11,6 +11,12 @@ const employeRoutes = require('./routes/employes');
 const factureRoutes = require('./routes/factures');
 const interventionRoutes = require('./routes/interventions');
 const dashboardRoutes = require('./routes/dashboard');
+const attendanceRoutes = require('./routes/attendance');
+const expenseRoutes = require('./routes/expenses');
+const inventoryRoutes = require('./routes/inventory');
+const notificationRoutes = require('./routes/notifications');
+const salaryAdvanceRoutes = require('./routes/salary-advances');
+const workLocationRoutes = require('./routes/work-locations');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -33,6 +39,12 @@ app.use('/api/employes', employeRoutes);
 app.use('/api/factures', factureRoutes);
 app.use('/api/interventions', interventionRoutes);
 app.use('/api/dashboard', dashboardRoutes);
+app.use('/api/attendance', attendanceRoutes);
+app.use('/api/expenses', expenseRoutes);
+app.use('/api/inventory', inventoryRoutes);
+app.use('/api/notifications', notificationRoutes);
+app.use('/api/salary-advances', salaryAdvanceRoutes);
+app.use('/api/work-locations', workLocationRoutes);
 
 
 // Route de test
