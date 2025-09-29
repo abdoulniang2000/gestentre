@@ -23,7 +23,7 @@ const Login: React.FC = () => {
 
   // If the user is already logged in, redirect to the dashboard
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to="/homepage" replace />;
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

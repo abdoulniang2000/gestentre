@@ -13,6 +13,7 @@ import PointagePage from './pages/Pointage';
 import DepensesPage from './pages/Depenses';
 import InventairePage from './pages/Inventaire';
 import './index.css';
+import HomePage from './pages/HomePage';
 
 function App() {
   return (
@@ -28,7 +29,7 @@ function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route index element={<Navigate to="/homepage" replace />} />
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="commercial/*" element={<CommercialPage />} />
             <Route path="rh/*" element={<RHPage />} />
@@ -38,6 +39,7 @@ function App() {
             <Route path="pointage" element={<PointagePage />} />
             <Route path="depenses" element={<DepensesPage />} />
             <Route path="inventaire" element={<InventairePage />} />
+            <Route path="homepage" element={<HomePage />} />
           </Route>
         </Routes>
       </Router>
