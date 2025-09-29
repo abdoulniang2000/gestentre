@@ -1,4 +1,4 @@
-import React, { type ReactNode } from 'react';
+import React, { type ReactNode, useEffect } from 'react';
 import { X } from 'lucide-react';
 
 interface ModalProps {
@@ -10,31 +10,46 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children, size = 'md' }) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
+    sm: 'modal-sm',
+    md: '',
+    lg: 'modal-lg',
+    xl: 'modal-xl',
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <div className="fixed inset-0 transition-opacity bg-gray-500 bg-opacity-75" onClick={onClose}></div>
-
-        <div className={`inline-block w-full ${sizeClasses[size]} p-6 my-8 overflow-hidden text-left align-middle transition-all transform bg-white shadow-xl rounded-lg`}>
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-medium text-gray-900">{title}</h3>
+    <div className="modal fade show d-block animate__animated animate__fadeIn" 
+         style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}
+         onClick={onClose}>
+      <div className={`modal-dialog modal-dialog-centered modal-dialog-scrollable ${sizeClasses[size]} animate__animated animate__zoomIn`}
+           onClick={(e) => e.stopPropagation()}>
+        <div className="modal-content border-0 shadow-lg rounded-4">
+          <div className="modal-header border-0 pb-0">
+            <h5 className="modal-title fw-bold text-dark">{title}</h5>
             <button
+              type="button"
+              className="btn-close"
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="w-6 h-6" />
-            </button>
+              aria-label="Close"
+            ></button>
           </div>
-          {children}
+          <div className="modal-body pt-3">
+            {children}
+          </div>
         </div>
       </div>
     </div>
