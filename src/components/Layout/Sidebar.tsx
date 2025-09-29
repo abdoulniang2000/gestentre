@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Home, ShoppingCart, Users, CreditCard, Settings, LogOut, User, Clock, DollarSign, Package } from 'lucide-react';
+import { Hop as Home, ShoppingCart, Users, CreditCard, Settings, LogOut, User, Clock, DollarSign, Package } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
 
 const Sidebar: React.FC = () => {

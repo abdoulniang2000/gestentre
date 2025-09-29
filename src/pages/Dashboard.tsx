@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShoppingCart, Users, CreditCard, Settings, User, TrendingUp, DollarSign, Package, Calendar, AlertTriangle, Clock, CheckCircle, MapPin, BarChart3, FileText } from 'lucide-react';
+import { ShoppingCart, Users, CreditCard, Settings, User, TrendingUp, DollarSign, Package, Calendar, TriangleAlert as AlertTriangle, Clock, CircleCheck as CheckCircle, MapPin, ChartBar as BarChart3, FileText } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { dashboardService } from '../services/api';
 import type { DashboardStats } from '../types';
